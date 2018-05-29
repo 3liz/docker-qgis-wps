@@ -3,24 +3,24 @@
 #
 #
 
-NAME=qgis3-wps-service
+NAME=qgis-wps
 
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-VERSION=1.0
+QYWPS_BRANCH=master
+
+VERSION=1.0.4
 VERSION_SHORT=1
 
 VERSION_TAG=$(VERSION)
+
+BUILD_ARGS=--build-arg wps_version=$(QYWPS_BRANCH)
 
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
-
-PYPISERVER:=pypi.snap.lizlan 
-
-BUILD_ARGS += --build-arg pypi_server=$(PYPISERVER)
 
 BUILDIMAGE=$(NAME):$(VERSION_TAG)-$(COMMITID)
 ARCHIVENAME=$(shell echo $(NAME):$(VERSION_TAG)|tr '[:./]' '_')
@@ -40,9 +40,6 @@ manifest:
 
 build: manifest
 	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) .
-
-test:
-	@echo No tests defined !
 
 archive:
 	docker save $(BUILDIMAGE) | bzip2 > $(FACTORY_ARCHIVE_PATH)/$(ARCHIVENAME).bz2
@@ -76,6 +73,7 @@ run:
        -e QYWPS_SERVER_WORKDIR=/srv/data \
        $(BUILDIMAGE)
 
+# Client tests, run the service first
 test:
 	py.test -v tests/client/
 

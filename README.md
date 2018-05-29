@@ -28,7 +28,7 @@ docker run -it --rm -p 127.0.0.1:8080:8080 --net mynet \
        -e QYWPS_PROCESSSING_PROVIDERS_MODULE_PATH=/processing \
        -e QYWPS_CACHE_ROOTDIR=/projects \
        -e QYWPS_USER: {uid}:{gid} \
-       3liz/qgis3-wps-service
+       3liz/qgis-wps
 ```
 
 Replace {uid}:{gid} by the approriate uid and gid of your mounted volume directories. Alternatively you may use the
