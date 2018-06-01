@@ -16,7 +16,12 @@ VERSION_SHORT=1.0
 
 VERSION_TAG=$(VERSION)
 
+ifdef PYPISERVER
+BUILD_ARGS=--build-arg pypi_server=$(PYPISERVER)
+DOCKERFILE=-f Dockerfile.pypi
+else
 BUILD_ARGS=--build-arg wps_version=$(QYWPS_BRANCH)
+endif
 
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
@@ -40,7 +45,7 @@ manifest:
     echo archive=$(ARCHIVENAME) >> $(MANIFEST)
 
 build: manifest
-	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) .
+	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) $(DOCKERFILE) .
 
 archive:
 	docker save $(BUILDIMAGE) | bzip2 > $(FACTORY_ARCHIVE_PATH)/$(ARCHIVENAME).bz2
