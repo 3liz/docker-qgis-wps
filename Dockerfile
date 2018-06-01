@@ -8,13 +8,19 @@ LABEL Description="QGIS3 WPS service" Vendor="3liz.org" Version="1."
 ARG wps_version=master
 ARG wps_archive=https://github.com/3liz/py-qgis-wps/archive/${wps_version}.zip
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip gosu && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y --no-install-recommends curl unzip gosu \
+     python3-pandas \
+     python3-shapely  \
+     && rm -rf /var/lib/apt/lists/*
 
 # pip is broken on /ubuntu debian so that we using 
 # a 'regular' version of pip installed from easy_install in base image
 # using --no-cache-dir together with --extra-index-url does note work:
 # see https://github.com/pypa/pip/issues/4580
-RUN pip3 install --no-cache-dir sqlalchemy plotly \
+RUN pip3 install --no-cache-dir plotly \
+    simplejson \
+    geojson    \
+    scipy \
     && rm -rf /root/.cache /root/.ccache
 
 # Install qywps
