@@ -11,7 +11,7 @@ COMMITID=$(shell git rev-parse --short HEAD)
 QYWPS_BRANCH=master
 
 # keep that version number synchronized  with the qywps versions 
-VERSION=1.0.4
+VERSION=1.0.5
 VERSION_SHORT=1.0
 
 VERSION_TAG=$(VERSION)
