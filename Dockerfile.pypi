@@ -11,10 +11,6 @@ RUN apt update && apt install -y --no-install-recommends gosu \
      python3-shapely  \
      && rm -rf /var/lib/apt/lists/*
 
-# pip is broken on /ubuntu debian so that we using 
-# a 'regular' version of pip installed from easy_install in base image
-# using --no-cache-dir together with --extra-index-url does note work:
-# see https://github.com/pypa/pip/issues/4580
 RUN pip3 install --no-cache-dir --extra-index-url=https://$pypi_server --trusted-host=$pypi_server \
     plotly \
     simplejson \
@@ -22,6 +18,7 @@ RUN pip3 install --no-cache-dir --extra-index-url=https://$pypi_server --trusted
     scipy \
     pandas \
     qywps \
+    lizmap-api \
     && rm -rf /root/.cache /root/.ccache
 
 COPY factory.manifest /build.manifest
