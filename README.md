@@ -27,7 +27,7 @@ docker run -it --rm -p 127.0.0.1:8080:8080 --net mynet \
        -e QYWPS_PROCESSSING_PROVIDERS=provider1,provider2  \
        -e QYWPS_PROCESSSING_PROVIDERS_MODULE_PATH=/processing \
        -e QYWPS_CACHE_ROOTDIR=/projects \
-       -e QYWPS_USER: {uid}:{gid} \
+       -e QYWPS_USER={uid}:{gid} \
        3liz/qgis-wps
 ```
 
