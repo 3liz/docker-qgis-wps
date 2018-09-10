@@ -1,30 +1,32 @@
 # Need docker above v17-05.0-ce
 ARG REGISTRY_PREFIX=''
+ARG QGIS_VERSION=latest
 
-FROM  ${REGISTRY_PREFIX}qgis3-server:latest
+FROM  ${REGISTRY_PREFIX}qgis-platform:${QGIS_VERSION}
 MAINTAINER David Marteau <david.marteau@3liz.com>
 LABEL Description="QGIS3 WPS service" Vendor="3liz.org" Version="1."
 
 ARG wps_version=master
 ARG wps_archive=https://github.com/3liz/py-qgis-wps/archive/${wps_version}.zip
 
-ARG api_version=lizmap_api
+ARG api_version=master
 ARG api_archive=https://github.com/dmarteau/lizmap-plugin/archive/${api_version}.zip
 
-RUN apt update && apt install -y --no-install-recommends curl unzip gosu \
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip gosu make \
      python3-shapely  \
+     python3-psutil \
      && rm -rf /var/lib/apt/lists/*
 
 # Install lizmap api
 RUN echo $api_archive \
     && curl -Ls -X GET  $api_archive --output lizmap-api.zip \
     && unzip -q lizmap-api.zip \
-    && cd lizmap-plugin-${api_version} && pip3 install . && cd .. \
+    && cd lizmap-plugin-${api_version} && pip3 install --no-cache . && cd .. \
     && rm -rf lizmap-plugin-${api_version} lizmap-api.zip
 
 RUN pip3 install -U --no-cache-dir plotly \
     simplejson \
-    geojson    \
+    geojson \
     scipy \
     pandas \
     Jinja2 \
