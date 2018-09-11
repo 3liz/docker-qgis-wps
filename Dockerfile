@@ -15,7 +15,8 @@ ARG api_archive=https://github.com/dmarteau/lizmap-plugin/archive/${api_version}
 RUN apt-get update && apt-get install -y --no-install-recommends curl unzip gosu make \
      python3-shapely  \
      python3-psutil \
-     && rm -rf /var/lib/apt/lists/*
+     && apt-get clean  && rm -rf /var/lib/apt/lists/* \
+     && rm -rf /usr/share/man 
 
 # Install lizmap api
 RUN echo $api_archive \

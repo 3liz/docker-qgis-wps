@@ -10,7 +10,8 @@ ARG pypi_server
 
 RUN apt-get update && apt-get install -y --no-install-recommends gosu \
      python3-shapely  \
-     && rm -rf /var/lib/apt/lists/*
+     && apt-get clean  && rm -rf /var/lib/apt/lists/* \
+     && rm -rf /usr/share/man 
 
 RUN pip3 install --no-cache-dir --extra-index-url=https://$pypi_server --trusted-host=$pypi_server \
     plotly \
