@@ -43,8 +43,6 @@ RUN echo $wps_archive \
     && rm -rf py-qgis-wps-${wps_version} \
     && rm -rf /root/.cache /root/.ccache
 
-COPY factory.manifest /build.manifest
-
 COPY /docker-entrypoint.sh /
 RUN chmod 0755 /docker-entrypoint.sh
 

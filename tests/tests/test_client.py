@@ -180,6 +180,40 @@ def test_handleprocesserror( host, data ):
     assert rv.status_code == 424
 
 
+def test_mapcontext_describe( host, data ):
+    """ Test describe process with context"""
+    rv = requests.get(host + "?SERVICE=WPS&Request=DescribeProcess&Identifier=lzmtest:testmapcontext&Version=1.0.0&MAP=france_parts")
+
+    assert rv.status_code == 200
+
+    # Get the response and test that we can get the result status
+    assert rv.headers.get('Content-Type') == 'text/xml;charset=utf-8'
+    resp = Response(rv)
+   
+    # Check the contextualized default value
+    assert resp.xpath_text('//DataInputs/Input/LiteralData/DefaultValue') == 'france_parts'
+ 
+
+def test_mapcontext_execute( host, data ):
+    """ Test execute process with context"""
+
+    rv = requests.get(host+("?SERVICE=WPS&Request=Execute&Identifier=lzmtest:testmapcontext&Version=1.0.0"
+                               "&MAP=france_parts&DATAINPUTS=INPUT=hello_context"))
+    assert rv.status_code == 200
+
+    # Get result 
+    resp = Response(rv)    
+    assert resp.xpath_text('//wps:ProcessOutputs/wps:Output/wps:Data/wps:LiteralData') == 'france_parts'
+
+
+def test_unknownprocess( host ):
+    """ Test unknown process error """
+    rv = requests.get(host+("?SERVICE=WPS&Request=Execute&Identifier=lzmtest:testidonotexists&Version=1.0.0"
+                               "&MAP=france_parts&DATAINPUTS=INPUT=wtf"))
+
+    assert rv.status_code == 400
+    resp = Response(rv)
+
 #def test_slowprogress( host, data ):
 #    """  Test execute timeout """
 #    rv = requests.get(host+("?SERVICE=WPS&Request=Execute&Identifier=lzmtest:testlongprocess&Version=1.0.0"

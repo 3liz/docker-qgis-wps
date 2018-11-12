@@ -1,3 +1,4 @@
+SHELL:=bash
 # 
 # Build docker image
 #
@@ -8,67 +9,68 @@ NAME=qgis-wps
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-QYWPS_BRANCH=master
-
-# keep that version number synchronized  with the qywps versions 
-VERSION=1.0.5
-VERSION_SHORT=1.0
+VERSION:=release
 
 ifdef PYPISERVER
 BUILD_ARGS=--build-arg pypi_server=$(PYPISERVER)
 DOCKERFILE=-f Dockerfile.pypi
 else
-BUILD_ARGS=--build-arg wps_version=$(QYWPS_BRANCH)
+BUILD_VERSION:=master
+BUILD_ARGS=--build-arg wps_version=$(BUILD_VERSION)
 endif
 
-ifdef QGIS_VERSION
-VERSION += -$(QGIS_VERSION)
-VERSION_SHORT += -$(QGIS_VERSION)
-BUILD_ARGS += --build-arg QGIS_VERSION=$(QGIS_VERSION) 
-endif
-
-VERSION_TAG=$(VERSION)
+BUILD_ARGS += --build-arg QGIS_VERSION=$(VERSION)
 
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
 
-BUILDIMAGE=$(NAME):$(VERSION_TAG)-$(COMMITID)
-ARCHIVENAME=$(shell echo $(NAME):$(VERSION_TAG)|tr '[:./]' '_')
+BUILDIMAGE=$(NAME):$(VERSION)-$(COMMITID)
 
 MANIFEST=factory.manifest
 
 all:
-	@echo "Usage: make [build|archive|deliver|clean]"
+	@echo "Usage: make [build|deliver|clean]"
 
-manifest:
-	echo name=$(NAME) > $(MANIFEST) && \
-    echo version=$(VERSION)   >> $(MANIFEST) && \
-    echo version_short=$(VERSION_SHORT) >> $(MANIFEST) && \
-    echo buildid=$(BUILDID)   >> $(MANIFEST) && \
-    echo commitid=$(COMMITID) >> $(MANIFEST) && \
-    echo archive=$(ARCHIVENAME) >> $(MANIFEST)
+build: _build manifest
 
-build: manifest
+_build:
 	docker build --rm --force-rm --no-cache $(BUILD_ARGS) -t $(BUILDIMAGE) $(DOCKERFILE) .
 
-archive:
-	docker save $(BUILDIMAGE) | bzip2 > $(FACTORY_ARCHIVE_PATH)/$(ARCHIVENAME).bz2
+manifest:
+	{ \
+	set -e; \
+	version=`docker run --rm $(BUILDIMAGE) version`; \
+	version_short=`echo $$version | cut -d. -f1-2`; \
+	echo name=$(NAME) > $(MANIFEST) && \
+    echo version=$$version >> $(MANIFEST) && \
+    echo version_short=$$version_short >> $(MANIFEST) && \
+    echo buildid=$(BUILDID)   >> $(MANIFEST) && \
+    echo commitid=$(COMMITID) >> $(MANIFEST); }
+
+deliver: tag push
 
 tag:
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):latest
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION)
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION_SHORT)
+	{ set -e; source factory.manifest; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version_short; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION); \
+	}
 
-deliver: tag
-	docker push $(REGISTRY_URL)/$(NAME):latest
-	docker push $(REGISTRY_URL)/$(NAME):$(VERSION)
-	docker push $(REGISTRY_URL)/$(NAME):$(VERSION_SHORT)
+push:
+	{ set -e; source factory.manifest; \
+	docker push $(REGISTRY_URL)/$(NAME):$$version; \
+	docker push $(REGISTRY_URL)/$(NAME):$$version_short; \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION); \
+	}
 
-clean:
+
+clean-all:
 	docker rmi -f $(shell docker images $(BUILDIMAGE) -q)
 
+clean:
+	docker rmi $(BUILDIMAGE)
 
 REDIS_HOST:=redis
 DOCKER_OPTS:= --net mynet
@@ -89,6 +91,6 @@ run:
 
 # Client tests, run the service first
 test:
-	py.test -v tests/client/
+	py.test -v tests/
 
 

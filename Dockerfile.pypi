@@ -23,8 +23,6 @@ RUN pip3 install --no-cache-dir --extra-index-url=https://$pypi_server --trusted
     lizmap-api \
     && rm -rf /root/.cache /root/.ccache
 
-COPY factory.manifest /build.manifest
-
 COPY /docker-entrypoint.sh /
 RUN chmod 0755 /docker-entrypoint.sh
 
