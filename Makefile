@@ -16,7 +16,7 @@ BUILD_ARGS=--build-arg pypi_server=$(PYPISERVER)
 DOCKERFILE=-f Dockerfile.pypi
 else
 BUILD_VERSION:=master
-BUILD_ARGS=--build-arg wps_version=$(BUILD_VERSION)
+BUILD_ARGS=--build-arg wps_branch=$(BUILD_VERSION)
 endif
 
 BUILD_ARGS += --build-arg QGIS_VERSION=$(VERSION)

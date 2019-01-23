@@ -6,26 +6,25 @@ FROM  ${REGISTRY_PREFIX}qgis-platform:${QGIS_VERSION}
 MAINTAINER David Marteau <david.marteau@3liz.com>
 LABEL Description="QGIS3 WPS service" Vendor="3liz.org" Version="1."
 
-ARG wps_version=master
-ARG wps_archive=https://github.com/3liz/py-qgis-wps/archive/${wps_version}.zip
+ARG wps_branch=master
+ARG wps_repository=https://github.com/3liz/py-qgis-wps.git
 
-ARG api_version=master
-ARG api_archive=https://github.com/dmarteau/lizmap-plugin/archive/${api_version}.zip
+ARG api_branch=master
+ARG api_repository=https://github.com/dmarteau/lizmap-plugin.git
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip gosu make \
+RUN apt-get update && apt-get install -y --no-install-recommends gosu git make \
      python3-shapely  \
      python3-psutil \
      && apt-get clean  && rm -rf /var/lib/apt/lists/* \
      && rm -rf /usr/share/man 
 
 # Install lizmap api
-RUN echo $api_archive \
-    && curl -Ls -X GET  $api_archive --output lizmap-api.zip \
-    && unzip -q lizmap-api.zip \
-    && cd lizmap-plugin-${api_version} && pip3 install --no-cache . && cd .. \
-    && rm -rf lizmap-plugin-${api_version} lizmap-api.zip
+RUN git clone --branch $api_branch --depth=1 $api_repository lizmap-plugin \
+    && cd lizmap-plugin && pip3 install . && cd .. \
+    && rm -rf lizmap-plugin \
+    && rm -rf /root/.cache /root/.ccache
 
-RUN pip3 install -U --no-cache-dir plotly \
+RUN pip3 install -U plotly \
     simplejson \
     geojson \
     scipy \
@@ -34,13 +33,11 @@ RUN pip3 install -U --no-cache-dir plotly \
     && rm -rf /root/.cache /root/.ccache
 
 # Install qywps
-RUN echo $wps_archive \
-    && curl -Ls -X GET  $wps_archive --output python-wps.zip \
-    && unzip -q python-wps.zip \
-    && rm python-wps.zip \
-    && make -C py-qgis-wps-${wps_version} dist \
-    && pip3 install --no-cache py-qgis-wps-${wps_version}/build/dist/*.tar.gz \
-    && rm -rf py-qgis-wps-${wps_version} \
+RUN git clone --branch $wps_branch --depth=1 $wps_repository py-qgis-wps \
+    && make -C py-qgis-wps dist \
+    && pip3 install py-qgis-wps/build/dist/*.tar.gz \
+    && cp py-qgis-wps/factory.manifest /build.manifest \
+    && rm -rf py-qgis-wps \
     && rm -rf /root/.cache /root/.ccache
 
 COPY /docker-entrypoint.sh /
