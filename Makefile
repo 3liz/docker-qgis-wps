@@ -9,7 +9,7 @@ NAME=qgis-wps
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-VERSION:=release
+FLAVOR:=release
 
 ifdef PYPISERVER
 BUILD_ARGS=--build-arg pypi_server=$(PYPISERVER)
@@ -19,14 +19,14 @@ BUILD_VERSION:=master
 BUILD_ARGS=--build-arg wps_branch=$(BUILD_VERSION)
 endif
 
-BUILD_ARGS += --build-arg QGIS_VERSION=$(VERSION)
+BUILD_ARGS += --build-arg QGIS_VERSION=$(FLAVOR)
 
 ifdef REGISTRY_URL
 REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
 
-BUILDIMAGE=$(NAME):$(VERSION)-$(COMMITID)
+BUILDIMAGE=$(NAME):$(FLAVOR)-$(COMMITID)
 
 MANIFEST=factory.manifest
 
@@ -55,14 +55,14 @@ tag:
 	{ set -e; source factory.manifest; \
 	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version; \
 	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version_short; \
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION); \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(FLAVOR); \
 	}
 
 push:
 	{ set -e; source factory.manifest; \
 	docker push $(REGISTRY_URL)/$(NAME):$$version; \
 	docker push $(REGISTRY_URL)/$(NAME):$$version_short; \
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(VERSION); \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(FLAVOR); \
 	}
 
 
@@ -77,9 +77,9 @@ DOCKER_OPTS:= --net mynet
 
 run:
 	docker run -it --rm -p 8080:8080 $(DOCKER_OPTS)   \
-       -v $(shell pwd)/tests:/processing \
-       -v $(shell pwd)/tests/data:/projects \
-       -v $(shell pwd)/tests/__workdir__:/srv/data \
+       -v $$(pwd)/tests:/processing \
+       -v $$(pwd)/tests/data:/projects \
+       -v $$(pwd)/tests/__workdir__:/srv/data \
        -e QYWPS_SERVER_PARALLELPROCESSES=2 \
        -e QYWPS_SERVER_LOGSTORAGE=REDIS \
        -e QYWPS_REDIS_HOST=$(REDIS_HOST) \

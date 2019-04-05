@@ -16,7 +16,7 @@ variables:
 build:
   stage: build
   script:
-    - make build test deliver clean FLAVOR=$QGIS_FLAVOR
+    - make build deliver clean FLAVOR=$QGIS_FLAVOR
   environment:
     name: snap
   artifacts:
