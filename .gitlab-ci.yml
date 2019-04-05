@@ -1,0 +1,51 @@
+stages:
+    - build
+    - deploy
+    - release
+
+.only_changes: &changes_def
+    changes:
+      - Dockerfile.pypi
+      - Makefile
+      - tests/**/*
+      - docker-entrypoint.sh
+
+variables:
+    QGIS_FLAVOR: ltr        
+
+build:
+  stage: build
+  script:
+    - make build test deliver clean FLAVOR=$QGIS_FLAVOR
+  environment:
+    name: snap
+  artifacts:
+    paths:
+      - factory.manifest
+  only:
+    <<: *changes_def
+  tags:
+    - infrav3
+
+deploy_snap:
+  stage: deploy
+  script:
+    - $HOME/bin/lzmservicectl update wps upgrade
+  environment:
+    name: snap
+  only:
+    <<: *changes_def
+  tags:
+    - infrav3
+
+release:
+  stage: release
+  script:
+    - $FACTORY_SCRIPTS/release-image.sh qgis-wps-server
+    - $FACTORY_SCRIPTS/push-to-docker-hub.sh
+  environment:
+    name: production
+  when: manual
+  tags:
+    - infrav3
+

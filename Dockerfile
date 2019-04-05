@@ -12,9 +12,7 @@ ARG wps_repository=https://github.com/3liz/py-qgis-wps.git
 ARG api_branch=master
 ARG api_repository=https://github.com/dmarteau/lizmap-plugin.git
 
-RUN apt-get update && apt-get install -y --no-install-recommends gosu git make \
-     python3-shapely  \
-     python3-psutil \
+RUN apt-get update && apt-get install -y --no-install-recommends git make \
      && apt-get clean  && rm -rf /var/lib/apt/lists/* \
      && rm -rf /usr/share/man 
 
