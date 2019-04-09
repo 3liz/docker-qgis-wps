@@ -1,0 +1,22 @@
+version: '3'
+services:
+  wps:
+    image: ${BUILDIMAGE}
+    environment:
+      QYWPS_SERVER_PARALLELPROCESSES: '2'
+      QYWPS_SERVER_LOGSTORAGE: REDIS
+      QYWPS_REDIS_HOST: redis
+      QYWPS_PROCESSSING_PROVIDERS_MODULE_PATH: /processing
+      QYWPS_CACHE_ROOTDIR: /projects
+      QYWPS_SERVER_WORKDIR: /srv/data
+      QYWPS_USER: ${BECOME_USER}
+    volumes:
+      - ${PWD}/tests:/processing
+      - ${PWD}/tests/data:/projects
+      - ${PWD}/tests/__workdir__:/srv/data
+      - ${PWD}/.home:/home/qgis
+    ports:
+      - 127.0.0.1:8888:8080
+  redis:
+      image: redis:5
+

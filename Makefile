@@ -9,7 +9,7 @@ NAME=qgis-wps
 BUILDID=$(shell date +"%Y%m%d%H%M")
 COMMITID=$(shell git rev-parse --short HEAD)
 
-FLAVOR:=release
+FLAVOR:=ltr
 
 ifdef PYPISERVER
 BUILD_ARGS=--build-arg pypi_server=$(PYPISERVER)
@@ -26,7 +26,7 @@ REGISTRY_PREFIX=$(REGISTRY_URL)/
 BUILD_ARGS += --build-arg REGISTRY_PREFIX=$(REGISTRY_PREFIX)
 endif
 
-BUILDIMAGE=$(NAME):$(FLAVOR)-$(COMMITID)
+export BUILDIMAGE=$(NAME):$(FLAVOR)-$(COMMITID)
 
 MANIFEST=factory.manifest
 
@@ -72,22 +72,14 @@ clean-all:
 clean:
 	docker rmi $(BUILDIMAGE)
 
-REDIS_HOST:=redis
-DOCKER_OPTS:= --net mynet
+export BECOME_USER=$(shell id -u):$(shell id -g)
 
-run:
-	docker run -it --rm -p 8080:8080 $(DOCKER_OPTS)   \
-       -v $$(pwd)/tests:/processing \
-       -v $$(pwd)/tests/data:/projects \
-       -v $$(pwd)/tests/__workdir__:/srv/data \
-       -e QYWPS_SERVER_PARALLELPROCESSES=2 \
-       -e QYWPS_SERVER_LOGSTORAGE=REDIS \
-       -e QYWPS_REDIS_HOST=$(REDIS_HOST) \
-       -e QYWPS_PROCESSSING_PROVIDERS=lzmtest \
-       -e QYWPS_PROCESSSING_PROVIDERS_MODULE_PATH=/processing \
-       -e QYWPS_CACHE_ROOTDIR=/projects \
-       -e QYWPS_SERVER_WORKDIR=/srv/data \
-       $(BUILDIMAGE)
+run: stop
+	docker-compose up
+
+stop:
+	docker-compose stop  || true
+	docker-compose rm -f || true
 
 # Client tests, run the service first
 test:

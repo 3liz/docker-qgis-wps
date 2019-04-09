@@ -11,7 +11,7 @@ fi
 QYWPS_USER=${QYWPS_USER:-"9001:9001"}
 
 # Qgis need a HOME
-export HOME=/home/wps
+export HOME=/home/qgis
 
 if [ "$(id -u)" = '0' ]; then
    mkdir -p $HOME
