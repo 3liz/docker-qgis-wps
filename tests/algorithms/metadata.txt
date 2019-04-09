@@ -2,15 +2,16 @@
 [general]
 name=Test
 qgisMinimumVersion=3.4
-description=This plugin adds a new processing provider for GeoVit project
+description=This plugin adds a new processing provider for Tests
 version=0.1
 author=3liz
 email=infos@3liz.com
 
-about=GeoVit algorithms
+about=Tests algorithms
 
-tracker=https://projects.3liz.org/clients/irstea-geovit-processing.git/issues
-repository=https://projects.3liz.org/clients/irstea-geovit-processing.git
+tracker=https://github.com/3liz/py-qgis-wp
+repository=https://github.com/3liz/py-qgis-wp
+
 # End of mandatory metadata
 
 # Recommended items:
@@ -21,7 +22,6 @@ repository=https://projects.3liz.org/clients/irstea-geovit-processing.git
 # Tags are comma separated with spaces allowed
 tags=python
 
-homepage=https://projects.3liz.org/clients/irstea-geovit-processing
 category=Analysis
 icon=icon.png
 # experimental flag
