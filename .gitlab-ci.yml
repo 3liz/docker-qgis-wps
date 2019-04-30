@@ -46,8 +46,6 @@ release:
   environment:
     name: production
   when: manual
-  only:
-    - tags
   tags:
     - infrav3
 
