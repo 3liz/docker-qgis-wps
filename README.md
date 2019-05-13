@@ -24,8 +24,8 @@ docker run -it --rm -p 127.0.0.1:8080:8080 --net mynet \
        -e QYWPS_SERVER_WORKDIR=/srv/data \
        -e QYWPS_SERVER_PARALLELPROCESSES=2 \
        -e QYWPS_SERVER_LOGSTORAGE=REDIS \
-       -e QYWPS_PROCESSSING_PROVIDERS=provider1,provider2  \
-       -e QYWPS_PROCESSSING_PROVIDERS_MODULE_PATH=/processing \
+       -e QYWPS_PROCESSING_PROVIDERS=provider1,provider2  \
+       -e QYWPS_PROCESSING_PROVIDERS_MODULE_PATH=/processing \
        -e QYWPS_CACHE_ROOTDIR=/projects \
        -e QYWPS_USER={uid}:{gid} \
        3liz/qgis-wps
@@ -42,7 +42,7 @@ to adapt the deployment according to your infrastructure.
 
 Master Qgis projects must be located at the location given by  `QYWPS_CACHE_ROOTDIR` - see configuration variables.
 
-Processing algorithms are located at the lacation given by `QYWPS_PROCESSSING_PROVIDERS_MODULE_PATH`. 
+Processing algorithms are located at the lacation given by `QYWPS_PROCESSING_PROVIDERS_MODULE_PATH`. 
 See the Qywps documentation on how to configure properly you provider directory: https://projects.3liz.org/infra-v3/py-qgis-wps/tree/master#configuring-providers
 
 ## Configuration 
@@ -77,8 +77,8 @@ be retourned as WMS urls. This configuration variable set the base url for acces
 
 #### Processing configuration
 
-- QYWPS\_PROCESSSING\_PROVIDERS: List of providers for publishing algorithms (comma separated)
-- QYWPS\_PROCESSSING\_PROVIDERS\_MODULE\_PATH: Path to look for processing algoritms provider to publish, algorithms from providers specified heres will be runnable as WPS processes.
+- QYWPS\_PROCESSING\_PROVIDERS: List of providers for publishing algorithms (comma separated)
+- QYWPS\_PROCESSING\_PROVIDERS\_MODULE\_PATH: Path to look for processing algoritms provider to publish, algorithms from providers specified heres will be runnable as WPS processes.
 
 
 ## Using with Lizmap
