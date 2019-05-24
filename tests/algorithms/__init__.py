@@ -1,11 +1,14 @@
 
-from typing import Any
+from .TestAlgorithmProvider import  TestAlgorithmProvider
+
+class Test:
+    def __init__(self):
+        pass
 
 
-def WPSClassFactory(iface: 'WPSServerInterface') -> Any:
-    """ Load GeoVit
-    """
-    from algorithms.TestAlgorithmProvider import  TestAlgorithmProvider
+def WPSClassFactory( iface: 'WPSServerInterface' ) -> Test:
 
-    iface.registerProvider(TestAlgorithmProvider())
+    iface.registerProvider( TestAlgorithmProvider() )
+    return Test()
+
 

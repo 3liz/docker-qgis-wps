@@ -9,8 +9,6 @@ __output__
 __pycache__
 __workdir__
 
-tests/client/data/*
-
 .home
 .cache
 .local
