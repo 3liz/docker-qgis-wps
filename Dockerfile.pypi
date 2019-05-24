@@ -14,11 +14,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends gosu \
      && apt-get clean  && rm -rf /var/lib/apt/lists/* \
      && rm -rf /usr/share/man 
 
-RUN pip3 install \
-    plotly \
+RUN pip3 install plotly  \
     simplejson \
     geojson    \
-    scipy \
+    scipy  \
+    pandas \
+    Jinja2 \
     && pip3 install --extra-index-url=https://$pypi_server --trusted-host=$pypi_server --pre \
     qgis-wps \
     lizmap-api \
