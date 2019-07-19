@@ -21,7 +21,7 @@ build:
 deploy_snap:
   stage: deploy
   script:
-    - $HOME/bin/lzmservicectl update wps upgrade
+    - $HOME/bin/lzmservicectl update -C MUTU wps
   environment:
     name: snap
   tags:
