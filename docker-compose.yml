@@ -10,6 +10,7 @@ services:
       QYWPS_CACHE_ROOTDIR: /projects
       QYWPS_SERVER_WORKDIR: /srv/data
       QYWPS_USER: ${BECOME_USER}
+      QYWPS_PROCESSING_SCRIPT_FOLDERS: /processing/scripts
     volumes:
       - ${PWD}/tests:/processing
       - ${PWD}/tests/data:/projects

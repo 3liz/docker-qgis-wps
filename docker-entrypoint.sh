@@ -21,7 +21,7 @@ if [ "$(id -u)" = '0' ]; then
    chown -R $QYWPS_USER $QYWPS_SERVER_WORKDIR
 
    # Run as QYWPS_USER
-   exec gosu $QYWPS_USER  "$BASH_SOURCE"
+   exec gosu $QYWPS_USER  "$BASH_SOURCE" $@
 fi
 
 # Run as QYWPS_USER
