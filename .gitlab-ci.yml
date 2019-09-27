@@ -21,7 +21,7 @@ build:
 deploy_snap:
   stage: deploy
   script:
-    - $HOME/bin/lzmservicectl update -C MUTU wps
+    - $HOME/bin/lzmservicectl update -C MUTU wps --annotate="Updated image $QGIS_FLAVOR ($CI_COMMIT_SHORT_SHA)"
   environment:
     name: snap
   tags:
