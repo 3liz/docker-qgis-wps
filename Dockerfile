@@ -30,7 +30,7 @@ RUN pip3 install -U plotly \
     Jinja2 \
     && rm -rf /root/.cache /root/.ccache
 
-# Install qywps
+# Install pyqgiswps
 RUN git clone --branch $wps_branch --depth=1 $wps_repository py-qgis-wps \
     && make -C py-qgis-wps dist \
     && pip3 install py-qgis-wps/build/dist/*.tar.gz \

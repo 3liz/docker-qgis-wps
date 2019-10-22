@@ -14,6 +14,9 @@ FLAVOR:=ltr
 ifdef PYPISERVER
 BUILD_ARGS=--build-arg pypi_server=$(PYPISERVER)
 DOCKERFILE=-f Dockerfile.pypi
+ifdef PYPISCHEME
+BUILD_ARGS+=--build-arg pypi_scheme=$(PYPISCHEME)
+endif
 else
 BUILD_VERSION:=master
 BUILD_ARGS=--build-arg wps_branch=$(BUILD_VERSION)
