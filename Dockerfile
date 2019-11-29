@@ -38,6 +38,13 @@ RUN git clone --branch $wps_branch --depth=1 $wps_repository py-qgis-wps \
     && rm -rf py-qgis-wps \
     && rm -rf /root/.cache /root/.ccache
 
+# Install policy extension
+RUN git clone --branch release --depth=1 https://github.com/3liz/pyqgisservercontrib-lizmap-access-policy.git contrib-policy \
+    && make -C contrib-policy dist \
+    && pip3 install --no-cache contrib-policy/build/dist/*.tar.gz \
+    && rm -rf contrib-policy \
+    && rm -rf /root/.cache /root/.ccache
+
 COPY /docker-entrypoint.sh /
 RUN chmod 0755 /docker-entrypoint.sh
 

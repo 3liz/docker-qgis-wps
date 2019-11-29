@@ -59,14 +59,14 @@ tag:
 	{ set -e; source factory.manifest; \
 	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version; \
 	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$version_short; \
-	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$(FLAVOR); \
+	docker tag $(BUILDIMAGE) $(REGISTRY_PREFIX)$(NAME):$$release_tag; \
 	}
 
 push:
 	{ set -e; source factory.manifest; \
 	docker push $(REGISTRY_URL)/$(NAME):$$version; \
 	docker push $(REGISTRY_URL)/$(NAME):$$version_short; \
-	docker push $(REGISTRY_URL)/$(NAME):$(FLAVOR); \
+	docker push $(REGISTRY_URL)/$(NAME):$$release_tag; \
 	}
 
 

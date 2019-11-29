@@ -24,6 +24,7 @@ RUN pip3 install plotly  \
     && pip3 install --extra-index-url=$pypi_scheme://$pypi_server --trusted-host=$pypi_server --pre \
     py-qgis-wps \
     lizmap-api \
+    pyqgiservercontrib-lizmap-access-policy \
     && rm -rf /root/.cache /root/.ccache
 
 COPY /docker-entrypoint.sh /
