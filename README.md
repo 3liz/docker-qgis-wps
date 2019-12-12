@@ -1,3 +1,7 @@
+# DEPRECATED: Docker build files have been moved to the [py-qgis-wps repository](https://github.com/3liz/py-qgis-wps)
+
+This repository will build images only up to 1.2.x versions
+
 # Qgis3 WPS service
 
 Setup a processing based WPS service.
